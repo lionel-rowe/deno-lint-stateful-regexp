@@ -1,7 +1,7 @@
 {
 	"lock": false,
 	"name": "@li/deno-lint-stateful-regexp",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"exports": "./src/mod.ts",
 	"tasks": {
 		"test": "deno test -R"
@@ -26,7 +26,7 @@
 			"exclude": [],
 			"include": []
 		},
-		"plugins": ["./src/statefulRegexp.ts"]
+		"plugins": ["./src/mod.ts"]
 	},
 	"exclude": []
 }

@@ -1,5 +1,5 @@
 import { assertEquals } from 'jsr:@std/assert'
-import plugin from './statefulRegexp.ts'
+import plugin from './mod.ts'
 import { getExpectedWarnings } from './_testUtils.ts'
 
 const source = await Deno.readTextFile('./src/_fixtures/lintErrors.ts')

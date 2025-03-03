@@ -64,7 +64,7 @@ function handleExpression(context: Deno.lint.RuleContext, node: Deno.lint.Expres
 	}
 }
 
-export default {
+const plugin: Deno.lint.Plugin = {
 	name: 'stateful-regexp',
 	rules: {
 		'stateful-regexp': {
@@ -91,4 +91,6 @@ export default {
 			},
 		},
 	},
-} satisfies Deno.lint.Plugin
+}
+
+export default plugin
