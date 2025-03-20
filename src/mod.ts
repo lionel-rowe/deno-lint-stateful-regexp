@@ -32,7 +32,7 @@ function report(context: Deno.lint.RuleContext, node: Deno.lint.Literal | Deno.l
 	})
 }
 
-function handleExpression(context: Deno.lint.RuleContext, node: Deno.lint.Expression) {
+function handleExpression(context: Deno.lint.RuleContext, node: Deno.lint.Literal | Deno.lint.NewExpression) {
 	switch (node.type) {
 		case 'Literal': {
 			const { value } = node
@@ -71,20 +71,35 @@ const plugin: Deno.lint.Plugin = {
 			create(context) {
 				return {
 					Program(node) {
-						const topLevelDeclarations = node.body.filter((x) => x.type === 'VariableDeclaration')
-
 						const topLevelAssignments = node.body
 							.filter((x) => x.type === 'ExpressionStatement')
 							.map((x) => x.expression)
 							.filter((x) => x.type === 'AssignmentExpression')
+							.flatMap((x) => x.right)
+
+						const exportDeclarations = node.body
+							.filter((x) => x.type === 'ExportNamedDeclaration')
+							.map((x) => x.declaration)
+
+						const topLevelVariableDeclarations = [...node.body, ...exportDeclarations]
+							.filter((x) => x?.type === 'VariableDeclaration')
+							.flatMap((x) => x.declarations)
+							.flatMap((x) => x.init ?? [])
+
+						const exportDefaultDeclarations = node.body
+							.filter((x) => x.type === 'ExportDefaultDeclaration')
+							.map((x) => x.declaration)
 
 						for (
-							const node of [
-								...topLevelDeclarations.flatMap((x) => x.declarations).flatMap((x) => x.init ?? []),
-								...topLevelAssignments.flatMap((x) => x.right),
-							]
+							const node of new Set([
+								...topLevelAssignments,
+								...topLevelVariableDeclarations,
+								...exportDefaultDeclarations,
+							])
 						) {
-							handleExpression(context, node)
+							if (node.type === 'Literal' || node.type === 'NewExpression') {
+								handleExpression(context, node)
+							}
 						}
 					},
 				}

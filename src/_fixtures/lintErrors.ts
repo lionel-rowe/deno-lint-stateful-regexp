@@ -38,3 +38,15 @@ function _fn() {
 }
 
 const _8 = () => /./gy
+
+export const _9 = /./gy
+//                ^^^^^ Avoid using stateful RegExp with "g" (global) or "y" (sticky) flags at the top level.
+
+export const _10 = () => /./gy
+
+export default /./gy
+//             ^^^^^ Avoid using stateful RegExp with "g" (global) or "y" (sticky) flags at the top level.
+
+export const _11 = new RegExp('', 'du')
+export const _12 = new RegExp('', 'gy')
+//                 ^^^^^^^^^^^^^^^^^^^^ Avoid using stateful RegExp with "g" (global) or "y" (sticky) flags at the top level.
